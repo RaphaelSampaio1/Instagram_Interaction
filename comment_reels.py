@@ -28,9 +28,11 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 
 class ReelInteractor:
     comment_list = [
-        "This is fire! 🔥",
-        "My algorithm is going blessed! 🙌🔥",
-        "Daaaaa I love this type of content!"
+        "This is fire!",
+        "My algorithm is going blessed!",
+        "Daaaaa I love this type of content!",
+        "This is so cool!",
+        "The best place ever !"
     ]
     
 
@@ -63,7 +65,15 @@ class ReelInteractor:
             editor = WebDriverWait(bot.driver, 10).until(EC.visibility_of_element_located((By.XPATH, editor_xp)))
             bot.driver.execute_script("arguments[0].focus();", editor)
             comment_text = random.choice(ReelInteractor.comment_list)
-            editor.send_keys(comment_text)
+
+            # Send Comment
+            
+            
+            for char in comment_text:
+                editor.send_keys(char)
+                sleep(random.uniform(0.05, 0.15))
+            
+            bot.driver.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", editor)
             sleep(random.uniform(1, 2))
             
             editor.send_keys(Keys.RETURN) ## Press Enter to submit
