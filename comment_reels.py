@@ -27,17 +27,24 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 
 
 class ReelInteractor:
+
+
+    BTN_COMMENT = "//div[@aria-expanded='false' and @aria-haspopup='menu' and @role='button']"
+
     comment_list = [
         "This is fire!",
         "My algorithm is going blessed!",
         "Daaaaa I love this type of content!",
         "This is so cool!",
-        "The best place ever !"
+        "The best place ever !",
+        "damn, like what"
     ]
+
+    def __init__ (self, driver):
+        self.driver = driver
     
 
-    @staticmethod
-    def like_reel():
+    def like_reel(self):
         try:
             actions = ActionChains(bot.driver) # Actions like Double Click, Right Click, etc.            
             element = "//div[@class='x1ypdohk' and @data-visualcompletion='ignore-dynamic']//div[@role='button']" 
@@ -48,12 +55,12 @@ class ReelInteractor:
             logging.erro(f"Exception ocurred: ", exc_info=True)
 
 
-    @staticmethod
-    def comment_reel():
+    
+    def comment_reel(self):
         try:
             xpath = "//div[@aria-expanded='false' and @aria-haspopup='menu' and @role='button']"
-            btn = WebDriverWait(bot.driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
-            btn.click()
+            BTN_COMMENT = WebDriverWait(bot.driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+            BTN_COMMENT.click()
             
             sleep(random.uniform(2, 4))
     
@@ -82,6 +89,15 @@ class ReelInteractor:
         except Exception as e:
             logging.error(f"Exception ocurred: ", exc_info=True)
 
+    
+    def scroll_reels(self):
+        # Click on comment btn
+        btn = WebDriverWait(bot.driver, 10).until(EC.element_to_be_clickable((By.XPATH, self.BTN_COMMENT)))
+        btn.click()
+
+        bot.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        sleep(random.uniform(2, 4))
+
 
 ########## Main ##########
 try:
@@ -89,12 +105,22 @@ try:
     
     bot.driver.get("https://www.instagram.com/reels/")
     sleep(random.uniform(2, 5))
+
+    # Define ReelInteractor instance
+    ReelInteractor = ReelInteractor(bot.driver)
     
-    # Actually use the methods
+    # Like Reels
     ReelInteractor.like_reel()
     sleep(random.uniform(5,6))
+
+    # Comment Reels
     ReelInteractor.comment_reel()
-    
+    sleep(random.uniform(5,6))
+
+    # Scroll Reels
+    ReelInteractor.scroll_reels()
+    sleep(random.uniform(5,6))
+
 ##########################
     print("Done!")
     sleep(99)
